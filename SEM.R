@@ -62,6 +62,7 @@ cor(Bergh[,-11])
 # στρογγυλοποίηση σε δύο δεκαδικά
 cormat <- round(cor(Bergh[,-11]),2)
 
+library(corrplot)
 # διάγραμμα του πίνακα συσχετίσεων
 corrplot(cormat,type = 'lower')
 
@@ -71,24 +72,24 @@ nrow(Bergh)
 ## [1] 861
 
 ## Δημιουργία σύνθετων μεταβλητών
-Bergh$Open <- (O1+O2+O3)/3
+Bergh$Open <- (O1+O2+O3)/3 
 Bergh$Agree <- (A1+A2+A3)/3
 Bergh$Prejudice <- (EP+SP+DP+HP)/4
 
 #### Model 1: Μοντέλο γραμμικής παλινδρόμησης με δύο ανεξάρτητες μεταβλητές
 #### Καθορισμός, εκτίμηση και αξιολόγηση της προσαρμογής του μοντέλου
 
+library(lavaan)
+
 # Βήμα 1: Καθορισμός του μοντέλου
 model1 <- '
-# Structural model
 Prejudice ~ b1*Open + b2*Agree
-# Covariance structure of exogenous variables
-Open ~~ Open + Agree'
+Open ~~ Agree 
+'
 
 # Βήμα 2: Εκτίμηση του μοντέλου
 model1.fit <- sem(model1,
                   data = Bergh,
-                  meanstructure = FALSE,
                   estimator = "ML")
 
 # Βήμα 3: Αξιολόγηση του μοντέλου
